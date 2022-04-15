@@ -8,17 +8,17 @@ module Capybara::Apparition
       pos = visible_center
       raise ::Capybara::Apparition::MouseEventImpossible.new(self, 'args' => ['drag_to']) if pos.nil?
 
-      test = mouse_event_test(pos)
+      test = mouse_event_test(**pos)
       raise ::Capybara::Apparition::MouseEventFailed.new(self, 'args' => ['drag', test.selector, pos]) unless test.success
 
       begin
-        @page.mouse.move_to(pos).down
+        @page.mouse.move_to(**pos).down
         sleep delay
 
         other_pos = other.visible_center
         raise ::Capybara::Apparition::MouseEventImpossible.new(self, 'args' => ['drag_to']) if other_pos.nil?
 
-        @page.mouse.move_to(other_pos.merge(button: 'left'))
+        @page.mouse.move_to(**other_pos.merge(button: 'left'))
         sleep delay
       ensure
         @page.mouse.up
@@ -109,13 +109,13 @@ module Capybara::Apparition
     def html5_drag_to(element)
       driver.execute_script MOUSEDOWN_TRACKER
       scroll_if_needed
-      @page.mouse.move_to(visible_center).down
+      @page.mouse.move_to(**visible_center).down
       if driver.evaluate_script('window.capybara_mousedown_prevented')
         element.scroll_if_needed
         @page.mouse.move_to(element.visible_center).up
       else
         driver.execute_script HTML5_DRAG_DROP_SCRIPT, self, element
-        @page.mouse.up(element.visible_center)
+        @page.mouse.up(**element.visible_center)
       end
     end
 

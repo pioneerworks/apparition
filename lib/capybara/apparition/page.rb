@@ -22,7 +22,7 @@ module Capybara::Apparition
       # Provides a lot of info - but huge overhead
       # session.command 'Page.setLifecycleEventsEnabled', enabled: true
 
-      page = Page.new(browser, session, id, browser_context_id, options)
+      page = Page.new(browser, session, id, browser_context_id, **options)
 
       session.async_commands 'Network.enable', 'Runtime.enable', 'Security.enable', 'DOM.enable'
       session.async_command 'Security.setIgnoreCertificateErrors', ignore: !!ignore_https_errors
@@ -270,7 +270,7 @@ module Capybara::Apparition
       @status_code = 0
       navigate_opts = { url: url, transitionType: 'reload' }
       navigate_opts[:referrer] = extra_headers['Referer'] if extra_headers['Referer']
-      response = command('Page.navigate', navigate_opts)
+      response = command('Page.navigate', **navigate_opts)
 
       raise StatusFailError, 'args' => [url, response['errorText']] if response['errorText']
 
@@ -322,7 +322,7 @@ module Capybara::Apparition
       }
       metrics[:screenWidth], metrics[:screenHeight] = *screen if screen
 
-      command('Emulation.setDeviceMetricsOverride', metrics)
+      command('Emulation.setDeviceMetricsOverride', **metrics)
     end
 
     def fullscreen
@@ -349,11 +349,11 @@ module Capybara::Apparition
     end
 
     def command(name, **params)
-      @browser.command_for_session(@session.session_id, name, params).result
+      @browser.command_for_session(@session.session_id, name, **params).result
     end
 
     def async_command(name, **params)
-      @browser.command_for_session(@session.session_id, name, params).discard_result
+      @browser.command_for_session(@session.session_id, name, **params).discard_result
     end
 
     def extra_headers

@@ -197,8 +197,8 @@ module Capybara::Apparition
       current_page.command('Network.clearBrowserCache')
     end
 
-    def command(name, params = {})
-      result = client.send_cmd(name, params).result
+    def command(name, **params)
+      result = client.send_cmd(name, **params).result
       log result
 
       result || raise(Capybara::Apparition::ObsoleteNode.new(nil, nil))
@@ -207,8 +207,8 @@ module Capybara::Apparition
       raise
     end
 
-    def command_for_session(session_id, name, params)
-      client.send_cmd_to_session(session_id, name, params)
+    def command_for_session(session_id, name, **params)
+      client.send_cmd_to_session(session_id, name, **params)
     rescue DeadClient
       restart
       raise

@@ -22,7 +22,7 @@ module Capybara::Apparition
       end
 
       def async_command(name, **params)
-        send_cmd(name, params).discard_result
+        send_cmd(name, **params).discard_result
       end
 
       def async_commands(*names)
@@ -36,7 +36,7 @@ module Capybara::Apparition
     private
 
       def send_cmd(name, **params)
-        @browser.command_for_session(@session_id, name, params)
+        @browser.command_for_session(@session_id, name, **params)
       end
     end
   end

@@ -59,15 +59,15 @@ module Capybara::Apparition
       @session_handlers[session_id][event_name] << block
     end
 
-    def send_cmd(command, params)
+    def send_cmd(command, **params)
       time = Time.now
-      msg_id = send_msg(command, params)
+      msg_id = send_msg(command, **params)
       Response.new(self, msg_id, send_time: time)
     end
 
-    def send_cmd_to_session(session_id, command, params)
+    def send_cmd_to_session(session_id, command, **params)
       time = Time.now
-      msg_id, msg = generate_msg(command, params)
+      msg_id, msg = generate_msg(command, **params)
       wrapper_msg_id = send_msg('Target.sendMessageToTarget', sessionId: session_id, message: msg)
       Response.new(self, wrapper_msg_id, msg_id, send_time: time)
     end
@@ -89,8 +89,8 @@ module Capybara::Apparition
       end
     end
 
-    def send_msg(command, params)
-      msg_id, msg = generate_msg(command, params)
+    def send_msg(command, **params)
+      msg_id, msg = generate_msg(command, **params)
       @send_mutex.synchronize do
         puts "#{Time.now.to_i}: sending msg: #{msg}" if ENV['DEBUG'] == 'V'
         @ws.send_msg(msg)
@@ -98,7 +98,7 @@ module Capybara::Apparition
       msg_id
     end
 
-    def generate_msg(command, params)
+    def generate_msg(command, **params)
       @send_mutex.synchronize do
         msg_id = generate_unique_id
         [msg_id, { method: command, params: params, id: msg_id }.to_json]

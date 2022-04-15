@@ -130,7 +130,7 @@ module Capybara::Apparition
         when 'datetime-local'
           set_datetime_local(value)
         else
-          set_text(value.to_s, { delay: 0 }.merge(options))
+          set_text(value.to_s, **{ delay: 0 }.merge(options))
         end
       elsif tag_name == 'textarea'
         set_text(value.to_s)
@@ -182,14 +182,14 @@ module Capybara::Apparition
     end
 
     def click(keys = [], button: 'left', count: 1, **options)
-      pos = element_click_pos(options)
+      pos = element_click_pos(**options)
       raise ::Capybara::Apparition::MouseEventImpossible.new(self, 'args' => ['click']) if pos.nil?
 
-      test = mouse_event_test(pos)
+      test = mouse_event_test(**pos)
       raise ::Capybara::Apparition::MouseEventImpossible.new(self, 'args' => ['click']) if test.nil?
       raise ::Capybara::Apparition::MouseEventFailed.new(self, 'args' => ['click', test.selector, pos]) unless test.success
 
-      @page.mouse.click_at pos.merge(button: button, count: count, modifiers: keys)
+      @page.mouse.click_at **pos.merge(button: button, count: count, modifiers: keys)
       if ENV['DEBUG']
         begin
           new_pos = element_click_pos(options)
@@ -214,7 +214,7 @@ module Capybara::Apparition
       pos = visible_center
       raise ::Capybara::Apparition::MouseEventImpossible.new(self, 'args' => ['hover']) if pos.nil?
 
-      @page.mouse.move_to(pos)
+      @page.mouse.move_to(**pos)
     end
 
     EVENTS = {

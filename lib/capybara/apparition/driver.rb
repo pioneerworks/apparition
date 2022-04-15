@@ -214,7 +214,7 @@ module Capybara::Apparition
     end
 
     def add_header(name, value, options = {})
-      browser.add_header({ name => value }, { permanent: true }.merge(options))
+      browser.add_header({ name => value }, **{ permanent: true }.merge(options))
     end
     alias_method :header, :add_header
 
