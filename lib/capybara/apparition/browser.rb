@@ -140,7 +140,7 @@ module Capybara::Apparition
       sessions.each do |(target_id, session)|
         page_options = { ignore_https_errors: ignore_https_errors, js_errors: js_errors,
                          url_blacklist: @url_blacklist, url_whitelist: @url_whitelist }
-        new_page = Page.create(self, session, target_id, opener.browser_context_id, page_options).inherit(opener)
+        new_page = Page.create(self, session, target_id, opener.browser_context_id, **page_options).inherit(opener)
         @pages[target_id] = new_page
       end
 
